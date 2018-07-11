@@ -1,0 +1,6 @@
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\bin\Debug\DTO.dll
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\bin\Debug\DTO.pdb
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\obj\Debug\DTO.csproj.CoreCompileInputs.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\obj\Debug\DTO.dll
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\obj\Debug\DTO.pdb
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\DTO\obj\Debug\DTO.csprojAssemblyReference.cache

@@ -1,0 +1,2 @@
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProject.Tests\obj\Debug\RestApiProject.Tests.csprojAssemblyReference.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProject.Tests\obj\Debug\RestApiProject.Tests.csproj.CoreCompileInputs.cache
