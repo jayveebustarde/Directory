@@ -27,7 +27,7 @@ namespace Services
                 using (_unitOfWork)
                 {
                     productType.Id = Guid.NewGuid();
-                    _unitOfWork.ProductTypeRepository.Insert(productType);
+                    _unitOfWork.ProductTypeRepository.Add(productType);
                     _unitOfWork.SaveChanges("Lorem Ipsum");
                 }
             }

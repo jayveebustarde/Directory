@@ -27,7 +27,7 @@ namespace Services
                 using (_unitOfWork)
                 {
                     product.Id = Guid.NewGuid();
-                    _unitOfWork.ProductRepository.Insert(product);
+                    _unitOfWork.ProductRepository.Add(product);
                     _unitOfWork.SaveChanges("Lorem Ipsum");
                 }
             }
@@ -48,7 +48,7 @@ namespace Services
                 {
                     using (_unitOfWork)
                     {
-                        _unitOfWork.ProductRepository.Delete(prod);
+                        _unitOfWork.ProductRepository.Remove(prod);
                         _unitOfWork.SaveChanges("Lorem Ipsum");
                         isDeleted = true;
                     }

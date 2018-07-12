@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseRepository.cs" />
     <Compile Include="Identity\RoleStore.cs" />
     <Compile Include="Identity\UserStore.cs" />
     <Compile Include="Infrastructure\BaseRepository.cs" />

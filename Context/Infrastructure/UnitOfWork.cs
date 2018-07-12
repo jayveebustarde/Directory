@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Context.Infrastructure
 {
-    public interface IUnitOfWork
-    {
-        void SaveChanges();
-        Task SaveChangesAsync();
-        void SaveChanges(string userId);
-        Task SaveChangesAsync(string userId);
-    }
+    //public interface IUnitOfWork
+    //{
+    //    void SaveChanges();
+    //    Task SaveChangesAsync();
+    //    void SaveChanges(string userId);
+    //    Task SaveChangesAsync(string userId);
+    //}
 
     internal class UnitOfWork : IUnitOfWork
     {

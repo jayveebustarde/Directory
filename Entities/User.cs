@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public class User : IUser<Guid>, IAudit
+    public class User : IUser<Guid>
     {
         [Key, Required]
         public Guid Id { get; set; }
@@ -36,10 +36,5 @@ namespace Entities
         public virtual bool LockoutEnabled { get; set; }
 
         public virtual int AccessFailedCount { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
-        public string LastUpdatedBy { get; set; }
-        public string CreatedBy { get; set; }
     }
 }

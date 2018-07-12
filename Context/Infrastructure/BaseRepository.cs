@@ -22,45 +22,45 @@ namespace Context.Infrastructure
         void Remove(Expression<Func<T, bool>> where);
     }
 
-    internal abstract class BaseRepository<T> : IRepository<T>
-        where T : class
-    {
-        #region Properties
+    //internal abstract class BaseRepository<T> : IRepository<T>
+    //    where T : class
+    //{
+    //    #region Properties
 
-        protected DbContext db;
-        protected DbSet<T> dbSet;
+    //    protected DbContext db;
+    //    protected DbSet<T> dbSet;
 
-        protected IDbFactory DbFactory
-        {
-            get;
-            private set;
-        }
+    //    protected IDbFactory DbFactory
+    //    {
+    //        get;
+    //        private set;
+    //    }
 
-        protected DbContext DbContext { get { return db ?? (db = new DirectoryContext()); } }
+    //    protected DbContext DbContext { get { return db ?? (db = new DirectoryContext()); } }
 
-        #endregion
-        
-        public BaseRepository(IDbFactory dbFactory)
-        {
-            this.DbFactory = dbFactory;
-            this.dbSet = DbContext.Set<T>();
-        }
+    //    #endregion
 
-        #region Implementation
+    //    public BaseRepository(IDbFactory dbFactory)
+    //    {
+    //        this.DbFactory = dbFactory;
+    //        this.dbSet = DbContext.Set<T>();
+    //    }
 
-        public virtual IEnumerable<T> GetAll () => dbSet.ToList();
-        public virtual IEnumerable<T> FindAll(Expression<Func<T, bool>> predicate) => dbSet.Where(predicate).ToList();
-        public virtual T GetById(Guid id) => dbSet.Find(id);
-        public virtual void Add(T entity) => dbSet.Add(entity);
-        public virtual void Remove(T entity) => db.Entry(entity).State = EntityState.Deleted;
-        public void Remove(Expression<Func<T, bool>> where) => dbSet.RemoveRange(dbSet.Where(where));
-        public Task<T> GetByIdAsync(Guid id) => dbSet.FindAsync(id); 
-        public virtual void Update(T entity)
-        {
-            dbSet.Attach(entity);
-            db.Entry(entity).State = EntityState.Modified;
-        }
+    //    #region Implementation
 
-        #endregion
-    }
+    //    public virtual IEnumerable<T> GetAll () => dbSet.ToList();
+    //    public virtual IEnumerable<T> FindAll(Expression<Func<T, bool>> predicate) => dbSet.Where(predicate).ToList();
+    //    public virtual T GetById(Guid id) => dbSet.Find(id);
+    //    public virtual void Add(T entity) => dbSet.Add(entity);
+    //    public virtual void Remove(T entity) => db.Entry(entity).State = EntityState.Deleted;
+    //    public void Remove(Expression<Func<T, bool>> where) => dbSet.RemoveRange(dbSet.Where(where));
+    //    public Task<T> GetByIdAsync(Guid id) => dbSet.FindAsync(id); 
+    //    public virtual void Update(T entity)
+    //    {
+    //        dbSet.Attach(entity);
+    //        db.Entry(entity).State = EntityState.Modified;
+    //    }
+
+    //    #endregion
+    //}
 }

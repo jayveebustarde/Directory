@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Context.Infrastructure;
 using Context.Repositories;
@@ -14,12 +16,10 @@ namespace Context.Identity
     internal class RoleStore : IRoleStore
     {
         private IUnitOfWork _uow;
-        private IRoleRepository _roleRepository;
 
         public RoleStore(IUnitOfWork uow, IRoleRepository roleRepository)
         {
             _uow = uow;
-            _roleRepository = roleRepository;
         }
 
         private void ThrowIfDisposed()
@@ -41,7 +41,7 @@ namespace Context.Identity
                 if (disposing)
                 {
                     _uow = null;
-                    _roleRepository = null;
+                    _uow.RoleRepository = null;
                 }
                 _disposed = true;
             }
@@ -53,7 +53,7 @@ namespace Context.Identity
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _roleRepository.Add(role);
+            _uow.RoleRepository.Add(role);
             await _uow.SaveChangesAsync();
         }
 
@@ -63,7 +63,7 @@ namespace Context.Identity
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _roleRepository.Update(role);
+            _uow.RoleRepository.Update(role);
             await _uow.SaveChangesAsync();
         }
 
@@ -73,14 +73,14 @@ namespace Context.Identity
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _roleRepository.Remove(role);
+            _uow.RoleRepository.Remove(role);
             await _uow.SaveChangesAsync();
         }
 
         public async Task<Role> FindByIdAsync(Guid roleId)
         {
             ThrowIfDisposed();
-            return await _roleRepository.GetByIdAsync(roleId);
+            return await _uow.RoleRepository.GetByIdAsync(roleId);
         }
 
         public async Task<Role> FindByNameAsync(string roleName)
@@ -89,7 +89,9 @@ namespace Context.Identity
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentNullException("roleName");
 
-            return await _roleRepository.FindByNameAsync(roleName);
+            var res = (await _uow.RoleRepository.GetAsync(x => x.Name == roleName)).FirstOrDefault();
+
+            return res;
         }
     }
 }

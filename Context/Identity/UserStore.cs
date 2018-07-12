@@ -26,25 +26,10 @@ namespace Context.Identity
     internal class UserStore : IUserStore
     {
         private IUnitOfWork _uow;
-        private IUserRepository _userRepository;
-        private IUserLoginRepository _userLoginRepository;
-        private IUserClaimRepository _userClaimRepository;
-        private IUserRoleRepository _userRoleRepository;
-        private IRoleRepository _roleRepository;
 
-        public UserStore(IUnitOfWork uow,
-            IUserRepository userRepository,
-            IUserLoginRepository userLoginRepository,
-            IUserClaimRepository userClaimRepository,
-            IUserRoleRepository userRoleRepository,
-            IRoleRepository roleRepository)
+        public UserStore(IUnitOfWork uow)
         {
             _uow = uow;
-            _userRepository = userRepository;
-            _userLoginRepository = userLoginRepository;
-            _userClaimRepository = userClaimRepository;
-            _userRoleRepository = userRoleRepository;
-            _roleRepository = roleRepository;
         }
 
         private void ThrowIfDisposed()
@@ -67,11 +52,6 @@ namespace Context.Identity
                 if (disposing)
                 {
                     _uow = null;
-                    _userRepository = null;
-                    _userLoginRepository = null;
-                    _userClaimRepository = null;
-                    _userRoleRepository = null;
-                    _roleRepository = null;
                 }
                 _disposed = true;
             }
@@ -85,7 +65,7 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _userRepository.Add(user);
+            _uow.UserRepository.Add(user);
             await _uow.SaveChangesAsync();
         }
 
@@ -95,7 +75,7 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _userRepository.Update(user);
+            _uow.UserRepository.Update(user);
             await _uow.SaveChangesAsync();
         }
 
@@ -105,14 +85,14 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _userRepository.Remove(user);
+            _uow.UserRepository.Remove(user);
             await _uow.SaveChangesAsync();
         }
 
         public async Task<User> FindByIdAsync(Guid userId)
         {
             ThrowIfDisposed();
-            return await _userRepository.GetByIdAsync(userId);
+            return await _uow.UserRepository.GetByIdAsync(userId);
         }
 
         public async Task<User> FindByNameAsync(string userName)
@@ -121,7 +101,7 @@ namespace Context.Identity
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException("userName");
 
-            return await _userRepository.FindByNameAsync(userName);
+            return (await _uow.UserRepository.GetAsync(x=>x.UserName == userName)).FirstOrDefault();
         }
 
         #endregion
@@ -136,7 +116,7 @@ namespace Context.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            _userLoginRepository.Add(new UserLogin { LoginProvider = login.LoginProvider, ProviderKey = login.ProviderKey, UserId = user.Id });
+            _uow.UserLoginRepository.Add(new UserLogin { LoginProvider = login.LoginProvider, ProviderKey = login.ProviderKey, UserId = user.Id });
             await _uow.SaveChangesAsync();
         }
 
@@ -148,7 +128,7 @@ namespace Context.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            _userLoginRepository.Remove(l => l.UserId == user.Id && l.LoginProvider == login.LoginProvider && l.UserId == user.Id);
+            _uow.UserLoginRepository.Remove(l => l.UserId == user.Id && l.LoginProvider == login.LoginProvider && l.UserId == user.Id);
             await _uow.SaveChangesAsync();
         }
 
@@ -158,7 +138,7 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var logins = await _userLoginRepository.GetByUserId(user.Id);
+            var logins = await _uow.UserLoginRepository.GetAsync(x=>x.UserId == user.Id);
             return logins.Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey)).ToList();
         }
 
@@ -168,11 +148,11 @@ namespace Context.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var userLogin = await _userLoginRepository.FindByLoginProviderAndProviderKey(login.LoginProvider, login.ProviderKey);
+            var userLogin = await _uow.UserLoginRepository.GetAsync(x=>x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
             if (userLogin == null)
                 return default(User);
 
-            return await _userRepository.GetByIdAsync(userLogin.UserId);
+            return await _uow.UserRepository.GetByIdAsync((userLogin).FirstOrDefault().UserId);
         }
 
         #endregion
@@ -185,7 +165,7 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var claims = await _userClaimRepository.GetByUserId(user.Id);
+            var claims = await _uow.UserClaimRepository.GetAsync(x=>x.UserId == user.Id);
 
             return claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList();
         }
@@ -198,7 +178,7 @@ namespace Context.Identity
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            _userClaimRepository.Add(new UserClaim
+            _uow.UserClaimRepository.Add(new UserClaim
             {
                 UserId = user.Id,
                 ClaimType = claim.Type,
@@ -215,7 +195,7 @@ namespace Context.Identity
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            _userClaimRepository.Remove(c => c.UserId == user.Id && c.ClaimType == claim.Type && c.ClaimValue == claim.Value);
+            _uow.UserClaimRepository.Remove(c => c.UserId == user.Id && c.ClaimType == claim.Type && c.ClaimValue == claim.Value);
             await _uow.SaveChangesAsync();
         }
 
@@ -232,11 +212,11 @@ namespace Context.Identity
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentNullException("roleName");
 
-            var role = await _roleRepository.FindByNameAsync(roleName);
+            var role = (await _uow.RoleRepository.GetAsync(x=>x.Name == roleName)).FirstOrDefault();
             if (role == null)
                 throw new InvalidOperationException("role not found");
 
-            _userRoleRepository.Add(new UserRole
+            _uow.UserRoleRepository.Add(new UserRole
             {
                 RoleId = role.Id,
                 UserId = user.Id
@@ -252,11 +232,11 @@ namespace Context.Identity
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentNullException("roleName");
 
-            var role = await _roleRepository.FindByNameAsync(roleName);
+            var role = (await _uow.RoleRepository.GetAsync(x => x.Name == roleName)).FirstOrDefault();
             if (role == null)
                 throw new InvalidOperationException("role not found");
 
-            _userRoleRepository.Remove(r => r.UserId == user.Id && r.RoleId == role.Id);
+            _uow.UserRoleRepository.Remove(r => r.UserId == user.Id && r.RoleId == role.Id);
             await _uow.SaveChangesAsync();
         }
 
@@ -266,7 +246,7 @@ namespace Context.Identity
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            return await _roleRepository.GetRolesNameByUserId(user.Id);
+            return (IList<string>)(await _uow.UserRoleRepository.GetAsync(x=>x.UserId == user.Id)).Select(x=>x.Role.Name);
         }
 
         public async Task<bool> IsInRoleAsync(User user, string roleName)
@@ -277,11 +257,11 @@ namespace Context.Identity
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentNullException("roleName");
 
-            var role = await _roleRepository.FindByNameAsync(roleName);
+            var role = (await _uow.RoleRepository.GetAsync(x => x.Name == roleName)).FirstOrDefault();
             if (role == null)
                 throw new InvalidOperationException("role not found");
 
-            return await _userRoleRepository.IsInRoleAsync(user.Id, role.Id);
+            return (await _uow.UserRoleRepository.GetAsync(x => x.UserId == user.Id && x.RoleId == role.Id)).Any();
         }
 
         #endregion
@@ -363,7 +343,7 @@ namespace Context.Identity
         public async Task<User> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
-            return await _userRepository.FindByEmailAsync(email);
+            return (await _uow.UserRepository.GetAsync(x=>x.Email == email)).FirstOrDefault();
         }
 
         public async Task SetPhoneNumberAsync(User user, string phoneNumber)

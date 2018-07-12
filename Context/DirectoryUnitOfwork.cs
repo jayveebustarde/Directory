@@ -9,6 +9,25 @@ using System.Threading.Tasks;
 
 namespace Context
 {
+    public interface IUnitOfWork : IDisposable
+    {
+        BaseRepository<ProductType> ProductTypeRepository { get; set; }
+        BaseRepository<Variation> VariationRepository { get; set; }
+        BaseRepository<Discount> DiscountRepository { get; set; }
+        BaseRepository<ProductDiscount> ProductDiscountRepository { get; set; }
+        BaseRepository<Product> ProductRepository { get; set; }
+
+        BaseRepository<User> UserRepository { get; set; }
+        BaseRepository<UserClaim> UserClaimRepository { get; set; }
+        BaseRepository<Role> RoleRepository { get; set; }
+        BaseRepository<UserLogin> UserLoginRepository { get; set; }
+        BaseRepository<UserRole> UserRoleRepository { get; set; }
+
+        void SaveChanges(string userId = null);
+
+        Task SaveChangesAsync(string userId = null);
+    }
+
     public class DirectoryUnitOfwork : IUnitOfWork, IDisposable
     {
         private DirectoryContext _context;
@@ -24,6 +43,14 @@ namespace Context
         private BaseRepository<Discount> _discountRepository;
         private BaseRepository<Variation> _variationRepository;
         private BaseRepository<ProductType> _productTypeRepository;
+
+        private BaseRepository<User> _userRepository;
+        private BaseRepository<UserRole> _userRoleRepository;
+        private BaseRepository<Role> _roleRepository;
+        private BaseRepository<UserLogin> _userLoginRepository;
+        private BaseRepository<UserClaim> _userClaimRepository;
+
+        #region Properties
 
         public BaseRepository<ProductType> ProductTypeRepository
         {
@@ -95,6 +122,71 @@ namespace Context
             set { _productRepository = value; }
         }
 
+        public BaseRepository<User> UserRepository
+        {
+            get
+            {
+                if (this._userRepository == null)
+                {
+                    this._userRepository = new BaseRepository<User>(_context);
+                }
+                return _userRepository;
+            }
+            set { _userRepository = value; }
+        }
+
+        public BaseRepository<UserClaim> UserClaimRepository
+        {
+            get
+            {
+                if (this._userClaimRepository == null)
+                {
+                    this._userClaimRepository = new BaseRepository<UserClaim>(_context);
+                }
+                return _userClaimRepository;
+            }
+            set { _userClaimRepository = value; }
+        }
+
+        public BaseRepository<Role> RoleRepository
+        {
+            get
+            {
+                if (this._roleRepository == null)
+                {
+                    this._roleRepository = new BaseRepository<Role>(_context);
+                }
+                return _roleRepository;
+            }
+            set { _roleRepository = value; }
+        }
+
+        public BaseRepository<UserLogin> UserLoginRepository
+        {
+            get
+            {
+                if (this._userLoginRepository == null)
+                {
+                    this._userLoginRepository = new BaseRepository<UserLogin>(_context);
+                }
+                return _userLoginRepository;
+            }
+            set { _userLoginRepository = value; }
+        }
+
+        public BaseRepository<UserRole> UserRoleRepository
+        {
+            get
+            {
+                if (this._userRoleRepository == null)
+                {
+                    this._userRoleRepository = new BaseRepository<UserRole>(_context);
+                }
+                return _userRoleRepository;
+            }
+            set { _userRoleRepository = value; }
+        }
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {
@@ -110,8 +202,8 @@ namespace Context
             Dispose(true);
         }
 
-        public int SaveChanges(string user) => _context.SaveChanges(user);
+        public void SaveChanges(string user) => _context.SaveChanges(user);
 
-        public Task<int> SaveChangesAsync(string user) => _context.SaveChangesAsync(user);
+        public Task SaveChangesAsync(string user) => _context.SaveChangesAsync(user);
     }
 }
