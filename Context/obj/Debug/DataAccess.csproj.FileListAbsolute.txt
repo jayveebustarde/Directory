@@ -19,3 +19,10 @@ C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\DataAccess.c
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.exe
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.pdb
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.Migrations.ImplmentedIdentityContext.resources
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csprojAssemblyReference.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.InitialContext.resources
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.ImplmentedIdentityContext.resources
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.GenerateResource.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.exe
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.pdb
