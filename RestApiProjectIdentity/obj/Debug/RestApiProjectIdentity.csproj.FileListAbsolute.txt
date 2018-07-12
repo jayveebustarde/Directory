@@ -128,3 +128,5 @@ C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProjectIdentity\obj\Deb
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProjectIdentity\obj\Debug\RestApiProjectIdentity.csproj.CopyComplete
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProjectIdentity\obj\Debug\RestApiProjectIdentity.dll
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\RestApiProjectIdentity\obj\Debug\RestApiProjectIdentity.pdb
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\RestApiProjectIdentity\obj\Debug\RestApiProjectIdentity.csprojAssemblyReference.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\RestApiProjectIdentity\obj\Debug\RestApiProjectIdentity.csproj.CoreCompileInputs.cache
