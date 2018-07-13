@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Context.Infrastructure;
-using Context.Repositories;
+﻿using AutoMapper;
+using Context;
+using DTO;
 using Entities;
 using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Context.Identity
+namespace Services.Identity
 {
-    public interface IRoleStore : IRoleStore<Role, Guid>
+    public interface IRoleStore : IRoleStore<RoleDTO, Guid>
     {
     }
 
@@ -17,7 +19,7 @@ namespace Context.Identity
     {
         private IUnitOfWork _uow;
 
-        public RoleStore(IUnitOfWork uow, IRoleRepository roleRepository)
+        public RoleStore(IUnitOfWork uow)
         {
             _uow = uow;
         }
@@ -47,43 +49,43 @@ namespace Context.Identity
             }
         }
 
-        public async Task CreateAsync(Role role)
+        public async Task CreateAsync(RoleDTO role)
         {
             ThrowIfDisposed();
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _uow.RoleRepository.Add(role);
+            _uow.RoleRepository.Add(MapRoleDtoToEntity(role));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Role role)
+        public async Task UpdateAsync(RoleDTO role)
         {
             ThrowIfDisposed();
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _uow.RoleRepository.Update(role);
+            _uow.RoleRepository.Update(MapRoleDtoToEntity(role));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Role role)
+        public async Task DeleteAsync(RoleDTO role)
         {
             ThrowIfDisposed();
             if (role == null)
                 throw new ArgumentNullException("role");
 
-            _uow.RoleRepository.Remove(role);
+            _uow.RoleRepository.Remove(MapRoleDtoToEntity(role));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<Role> FindByIdAsync(Guid roleId)
+        public async Task<RoleDTO> FindByIdAsync(Guid roleId)
         {
             ThrowIfDisposed();
-            return await _uow.RoleRepository.GetByIdAsync(roleId);
+            return MapRoleEntityToDto(await _uow.RoleRepository.GetByIdAsync(roleId));
         }
 
-        public async Task<Role> FindByNameAsync(string roleName)
+        public async Task<RoleDTO> FindByNameAsync(string roleName)
         {
             ThrowIfDisposed();
             if (string.IsNullOrWhiteSpace(roleName))
@@ -91,7 +93,27 @@ namespace Context.Identity
 
             var res = (await _uow.RoleRepository.GetAsync(x => x.Name == roleName)).FirstOrDefault();
 
-            return res;
+            return MapRoleEntityToDto(res);
+        }
+
+        private Role MapRoleDtoToEntity(RoleDTO roleObj)
+        {
+            if (roleObj == null) return null;
+            Mapper.Initialize(cfg => 
+            {
+                cfg.CreateMap<RoleDTO, Role>();
+            });
+            return Mapper.Map<Role>(roleObj);
+        }
+
+        private RoleDTO MapRoleEntityToDto(Role roleObj)
+        {
+            if (roleObj == null) return null;
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Role, RoleDTO>();
+            });
+            return Mapper.Map<RoleDTO>(roleObj);
         }
     }
 }

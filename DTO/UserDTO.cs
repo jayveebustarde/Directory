@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities
+namespace DTO
 {
-    public class User : IUser<Guid>
+    public class UserDTO : IUser<Guid>
     {
-        [Key, Required]
         public Guid Id { get; set; }
-
-        [MaxLength(256)]
+        
         public string UserName { get; set; }
-
-        [EmailAddress, MaxLength(256)]
+        
         public string Email { get; set; }
 
         public bool EmailConfirmed { get; set; }
@@ -37,11 +33,12 @@ namespace Entities
 
         public virtual int AccessFailedCount { get; set; }
 
-        public ICollection<UserLogin> Logins { get; set; }
 
-        public ICollection<UserClaim> Claims { get; set; }
 
-        public ICollection<UserRole> Roles { get; set; }
+        public List<UserLoginDTO> Logins { get; set; }
 
+        public List<UserClaimDTO> Claims { get; set; }
+
+        public List<UserRoleDTO> Roles { get; set; }
     }
 }

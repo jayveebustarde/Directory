@@ -41,19 +41,19 @@ namespace RestApiProjectIdentity
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Configure the application for OAuth based flow
-            PublicClientId = "self";
-            OAuthOptions = new OAuthAuthorizationServerOptions
-            {
-                TokenEndpointPath = new PathString("/Token"),
-                Provider = new ApplicationOAuthProvider(PublicClientId),
-                AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-                // In production mode set AllowInsecureHttp = false
-                AllowInsecureHttp = true
-            };
+            //PublicClientId = "self";
+            //OAuthOptions = new OAuthAuthorizationServerOptions
+            //{
+            //    TokenEndpointPath = new PathString("/Token"),
+            //    Provider = new ApplicationOAuthProvider(PublicClientId),
+            //    AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
+            //    AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+            //    // In production mode set AllowInsecureHttp = false
+            //    AllowInsecureHttp = true
+            //};
 
-            // Enable the application to use bearer tokens to authenticate users
-            app.UseOAuthBearerTokens(OAuthOptions);
+            //// Enable the application to use bearer tokens to authenticate users
+            //app.UseOAuthBearerTokens(OAuthOptions);
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(

@@ -37,30 +37,6 @@ namespace RestApiProject
 
             //builder.RegisterInstance<IBaseService<ProductDTO>>(new ProductService);
 
-            builder.RegisterType<DirectoryUnitOfwork>()
-                .As<IUnitOfWork>()
-                .InstancePerRequest();
-
-            builder.RegisterType<ProductService>()
-                .As<IBaseService<ProductDTO>>()
-                .InstancePerRequest();
-
-            builder.RegisterType<ProductTypeService>()
-                .As<IBaseService<ProductTypeDTO>>()
-                .InstancePerRequest();
-
-            builder.RegisterType<ProductDiscountService>()
-                .As<IBaseService<ProductDiscountDTO>>()
-                .InstancePerRequest();
-
-            builder.RegisterType<DiscountService>()
-                .As<IBaseService<DiscountDTO>>()
-                .InstancePerRequest();
-
-            builder.RegisterType<VariationService>()
-                .As<IBaseService<VariationDTO>>()
-                .InstancePerRequest();
-
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 

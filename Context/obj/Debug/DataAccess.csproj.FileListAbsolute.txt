@@ -19,13 +19,6 @@ C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\DataAccess.c
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.exe
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.pdb
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject\Context\obj\Debug\Context.Migrations.ImplmentedIdentityContext.resources
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csprojAssemblyReference.cache
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.InitialContext.resources
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.ImplmentedIdentityContext.resources
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.GenerateResource.cache
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.CoreCompileInputs.cache
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.exe
-C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.pdb
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Context.exe.config
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Context.exe
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Context.pdb
@@ -39,4 +32,13 @@ C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\EntityFra
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Microsoft.AspNet.Identity.Core.xml
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csprojAssemblyReference.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.InitialContext.resources
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.Migrations.ImplmentedIdentityContext.resources
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.GenerateResource.cache
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.CoreCompileInputs.cache
 C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\DataAccess.csproj.CopyComplete
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.exe
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\obj\Debug\Context.pdb
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Autofac.dll
+C:\Users\JBUSTARDE\source\repos\RestfulApiProject.v2\Context\bin\Debug\Autofac.xml

@@ -1,24 +1,26 @@
-﻿using System;
+﻿using AutoMapper;
+using Context;
+using DTO;
+using Entities;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using Context.Infrastructure;
-using Context.Repositories;
-using Entities;
-using Microsoft.AspNet.Identity;
 
-namespace Context.Identity
+namespace Services.Identity
 {
-    public interface IUserStore : IUserLoginStore<User, Guid>,
-        IUserClaimStore<User, Guid>,
-        IUserRoleStore<User, Guid>,
-        IUserPasswordStore<User, Guid>,
-        IUserSecurityStampStore<User, Guid>,
-        IUserEmailStore<User, Guid>,
-        IUserPhoneNumberStore<User, Guid>,
-        IUserTwoFactorStore<User, Guid>,
-        IUserLockoutStore<User, Guid>
+    public interface IUserStore : IUserLoginStore<UserDTO, Guid>,
+        IUserClaimStore<UserDTO, Guid>,
+        IUserRoleStore<UserDTO, Guid>,
+        IUserPasswordStore<UserDTO, Guid>,
+        IUserSecurityStampStore<UserDTO, Guid>,
+        IUserEmailStore<UserDTO, Guid>,
+        IUserPhoneNumberStore<UserDTO, Guid>,
+        IUserTwoFactorStore<UserDTO, Guid>,
+        IUserLockoutStore<UserDTO, Guid>
     {
 
     }
@@ -59,56 +61,56 @@ namespace Context.Identity
 
         #region user
 
-        public async Task CreateAsync(User user)
+        public async Task CreateAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _uow.UserRepository.Add(user);
+            _uow.UserRepository.Add(MapObjects<User>(user));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(User user)
+        public async Task UpdateAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _uow.UserRepository.Update(user);
+            _uow.UserRepository.Update(MapObjects<User>(user));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(User user)
+        public async Task DeleteAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            _uow.UserRepository.Remove(user);
+            _uow.UserRepository.Remove(MapObjects<User>(user));
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<User> FindByIdAsync(Guid userId)
+        public async Task<UserDTO> FindByIdAsync(Guid userId)
         {
             ThrowIfDisposed();
-            return await _uow.UserRepository.GetByIdAsync(userId);
+            return MapObjects<UserDTO>(await _uow.UserRepository.GetByIdAsync(userId));
         }
 
-        public async Task<User> FindByNameAsync(string userName)
+        public async Task<UserDTO> FindByNameAsync(string userName)
         {
             ThrowIfDisposed();
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException("userName");
 
-            return (await _uow.UserRepository.GetAsync(x=>x.UserName == userName)).FirstOrDefault();
+            return MapObjects<UserDTO>((await _uow.UserRepository.GetAsync(x => x.UserName == userName)).FirstOrDefault());
         }
 
         #endregion
 
         #region userlogin
 
-        public async Task AddLoginAsync(User user, UserLoginInfo login)
+        public async Task AddLoginAsync(UserDTO user, UserLoginInfo login)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -120,7 +122,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task RemoveLoginAsync(User user, UserLoginInfo login)
+        public async Task RemoveLoginAsync(UserDTO user, UserLoginInfo login)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -132,45 +134,45 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var logins = await _uow.UserLoginRepository.GetAsync(x=>x.UserId == user.Id);
+            var logins = await _uow.UserLoginRepository.GetAsync(x => x.UserId == user.Id);
             return logins.Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey)).ToList();
         }
 
-        public async Task<User> FindAsync(UserLoginInfo login)
+        public async Task<UserDTO> FindAsync(UserLoginInfo login)
         {
             ThrowIfDisposed();
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var userLogin = await _uow.UserLoginRepository.GetAsync(x=>x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
+            var userLogin = await _uow.UserLoginRepository.GetAsync(x => x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
             if (userLogin == null)
-                return default(User);
+                return default(UserDTO);
 
-            return await _uow.UserRepository.GetByIdAsync((userLogin).FirstOrDefault().UserId);
+            return MapObjects<UserDTO>(await _uow.UserRepository.GetByIdAsync((userLogin).FirstOrDefault().UserId));
         }
 
         #endregion
 
         #region claims
 
-        public async Task<IList<Claim>> GetClaimsAsync(User user)
+        public async Task<IList<Claim>> GetClaimsAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var claims = await _uow.UserClaimRepository.GetAsync(x=>x.UserId == user.Id);
+            var claims = await _uow.UserClaimRepository.GetAsync(x => x.UserId == user.Id);
 
             return claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList();
         }
 
-        public async Task AddClaimAsync(User user, Claim claim)
+        public async Task AddClaimAsync(UserDTO user, Claim claim)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -187,7 +189,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task RemoveClaimAsync(User user, Claim claim)
+        public async Task RemoveClaimAsync(UserDTO user, Claim claim)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -203,7 +205,7 @@ namespace Context.Identity
 
         #region roles
 
-        public async Task AddToRoleAsync(User user, string roleName)
+        public async Task AddToRoleAsync(UserDTO user, string roleName)
         {
             ThrowIfDisposed();
 
@@ -212,7 +214,7 @@ namespace Context.Identity
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentNullException("roleName");
 
-            var role = (await _uow.RoleRepository.GetAsync(x=>x.Name == roleName)).FirstOrDefault();
+            var role = (await _uow.RoleRepository.GetAsync(x => x.Name == roleName)).FirstOrDefault();
             if (role == null)
                 throw new InvalidOperationException("role not found");
 
@@ -224,7 +226,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task RemoveFromRoleAsync(User user, string roleName)
+        public async Task RemoveFromRoleAsync(UserDTO user, string roleName)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -240,16 +242,16 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<IList<string>> GetRolesAsync(User user)
+        public async Task<IList<string>> GetRolesAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            return (IList<string>)(await _uow.UserRoleRepository.GetAsync(x=>x.UserId == user.Id)).Select(x=>x.Role.Name);
+            return (IList<string>)(await _uow.UserRoleRepository.GetAsync(x => x.UserId == user.Id)).Select(x => x.Role.Name);
         }
 
-        public async Task<bool> IsInRoleAsync(User user, string roleName)
+        public async Task<bool> IsInRoleAsync(UserDTO user, string roleName)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -266,7 +268,7 @@ namespace Context.Identity
 
         #endregion
 
-        public async Task SetPasswordHashAsync(User user, string passwordHash)
+        public async Task SetPasswordHashAsync(UserDTO user, string passwordHash)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -275,19 +277,19 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<string> GetPasswordHashAsync(User user)
+        public Task<string> GetPasswordHashAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<bool> HasPasswordAsync(User user)
+        public Task<bool> HasPasswordAsync(UserDTO user)
         {
             return Task.FromResult(user.PasswordHash != null);
         }
 
-        public async Task SetSecurityStampAsync(User user, string stamp)
+        public async Task SetSecurityStampAsync(UserDTO user, string stamp)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -296,7 +298,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<string> GetSecurityStampAsync(User user)
+        public Task<string> GetSecurityStampAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -304,7 +306,7 @@ namespace Context.Identity
             return Task.FromResult(user.SecurityStamp);
         }
 
-        public async Task SetEmailAsync(User user, string email)
+        public async Task SetEmailAsync(UserDTO user, string email)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -313,7 +315,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<string> GetEmailAsync(User user)
+        public Task<string> GetEmailAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -321,7 +323,7 @@ namespace Context.Identity
             return Task.FromResult(user.Email);
         }
 
-        public Task<bool> GetEmailConfirmedAsync(User user)
+        public Task<bool> GetEmailConfirmedAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -329,7 +331,7 @@ namespace Context.Identity
             return Task.FromResult(user.EmailConfirmed);
         }
 
-        public async Task SetEmailConfirmedAsync(User user, bool confirmed)
+        public async Task SetEmailConfirmedAsync(UserDTO user, bool confirmed)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -340,13 +342,13 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<User> FindByEmailAsync(string email)
+        public async Task<UserDTO> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
-            return (await _uow.UserRepository.GetAsync(x=>x.Email == email)).FirstOrDefault();
+            return MapObjects<UserDTO>((await _uow.UserRepository.GetAsync(x => x.Email == email)).FirstOrDefault());
         }
 
-        public async Task SetPhoneNumberAsync(User user, string phoneNumber)
+        public async Task SetPhoneNumberAsync(UserDTO user, string phoneNumber)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -357,7 +359,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<string> GetPhoneNumberAsync(User user)
+        public Task<string> GetPhoneNumberAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -365,7 +367,7 @@ namespace Context.Identity
             return Task.FromResult(user.PhoneNumber);
         }
 
-        public Task<bool> GetPhoneNumberConfirmedAsync(User user)
+        public Task<bool> GetPhoneNumberConfirmedAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -373,7 +375,7 @@ namespace Context.Identity
             return Task.FromResult(user.PhoneNumberConfirmed);
         }
 
-        public async Task SetPhoneNumberConfirmedAsync(User user, bool confirmed)
+        public async Task SetPhoneNumberConfirmedAsync(UserDTO user, bool confirmed)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -383,7 +385,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task SetTwoFactorEnabledAsync(User user, bool enabled)
+        public async Task SetTwoFactorEnabledAsync(UserDTO user, bool enabled)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -393,7 +395,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<bool> GetTwoFactorEnabledAsync(User user)
+        public Task<bool> GetTwoFactorEnabledAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -401,7 +403,7 @@ namespace Context.Identity
             return Task.FromResult(user.TwoFactorEnabled);
         }
 
-        public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -409,7 +411,7 @@ namespace Context.Identity
             return Task.FromResult(user.LockoutEndDateUtc.HasValue ? new DateTimeOffset(DateTime.SpecifyKind(user.LockoutEndDateUtc.Value, DateTimeKind.Utc)) : new DateTimeOffset());
         }
 
-        public async Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
+        public async Task SetLockoutEndDateAsync(UserDTO user, DateTimeOffset lockoutEnd)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -420,7 +422,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<int> IncrementAccessFailedCountAsync(User user)
+        public async Task<int> IncrementAccessFailedCountAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -432,7 +434,7 @@ namespace Context.Identity
             return user.AccessFailedCount;
         }
 
-        public async Task ResetAccessFailedCountAsync(User user)
+        public async Task ResetAccessFailedCountAsync(UserDTO user)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -443,7 +445,7 @@ namespace Context.Identity
             await _uow.SaveChangesAsync();
         }
 
-        public Task<int> GetAccessFailedCountAsync(User user)
+        public Task<int> GetAccessFailedCountAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -451,7 +453,7 @@ namespace Context.Identity
             return Task.FromResult(user.AccessFailedCount);
         }
 
-        public Task<bool> GetLockoutEnabledAsync(User user)
+        public Task<bool> GetLockoutEnabledAsync(UserDTO user)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
@@ -459,7 +461,7 @@ namespace Context.Identity
             return Task.FromResult(user.LockoutEnabled);
         }
 
-        public async Task SetLockoutEnabledAsync(User user, bool enabled)
+        public async Task SetLockoutEnabledAsync(UserDTO user, bool enabled)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -467,6 +469,65 @@ namespace Context.Identity
 
             user.LockoutEnabled = enabled;
             await _uow.SaveChangesAsync();
+        }
+
+        private T MapObjects<T>(object userObject)
+            where T : class
+        {
+            if (userObject == null) return null;
+            Mapper.Initialize(cfg => {
+                cfg.CreateMap<User, T>();
+                cfg.CreateMap<UserDTO, T>();
+                cfg.CreateMap<UserLogin, T>();
+                cfg.CreateMap<UserLoginDTO, T>();
+                cfg.CreateMap<UserClaim, T>();
+                cfg.CreateMap<UserClaimDTO, T>();
+                cfg.CreateMap<UserRole, T>();
+                cfg.CreateMap<UserRoleDTO, T>();
+                cfg.CreateMap<Role, T>();
+                cfg.CreateMap<RoleDTO, T>();
+            });
+            if(userObject is User)
+            {
+                return Mapper.Map<T>((User)userObject);
+            }
+            if (userObject is UserDTO)
+            {
+                return Mapper.Map<T>((UserDTO)userObject);
+            }
+            if (userObject is UserLogin)
+            {
+                return Mapper.Map<T>((UserLogin)userObject);
+            }
+            if (userObject is UserLoginDTO)
+            {
+                return Mapper.Map<T>((UserLoginDTO)userObject);
+            }
+            if (userObject is UserClaim)
+            {
+                return Mapper.Map<T>((UserClaim)userObject);
+            }
+            if (userObject is UserClaimDTO)
+            {
+                return Mapper.Map<T>((UserClaimDTO)userObject);
+            }
+            if (userObject is UserRole)
+            {
+                return Mapper.Map<T>((UserRole)userObject);
+            }
+            if (userObject is UserRoleDTO)
+            {
+                return Mapper.Map<T>((UserRoleDTO)userObject);
+            }
+            if (userObject is Role)
+            {
+                return Mapper.Map<T>((Role)userObject);
+            }
+            if (userObject is RoleDTO)
+            {
+                return Mapper.Map<T>((RoleDTO)userObject);
+            }
+            return null;
         }
     }
 }
